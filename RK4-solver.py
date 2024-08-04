@@ -1,24 +1,5 @@
 import matplotlib.pyplot as plt
 
-params = {'prey_birthrate': 1,
-          'predator_eatrate': 0.01,
-          'predator_birthrate': 0.01,
-          'predator_deathrat': 0.5}
-
-
-def f_x(x, y, params):
-  a = params['prey_birthrate']
-  b = params['predator_eatrate']
-  dx_dt = a * x - (b * x * y)
-  return dx_dt
-
-
-def f_y(x, y, params):
-  c = params['predator_birthrate']
-  d = params['predator_deathrate']
-  dy_dt = c * x * y - (d * y)
-  return dy_dt
-
 
 class RK_4:
   
@@ -58,7 +39,74 @@ class RK_4:
   def operation(self, x, y, *args):
     val = (1/6) * (self.K_1(x, y, *args) + 2 * self.K_2(x, y, *args) + 2 * self.K_3(x, y, *args) + self.K_4(x, y, *args))
     return val
-      
-h = 0.001
-x_deriv = RK_4(f_x, h)
-x = x_deriv.operation(2, 3, params)
+
+
+def f_x(x, y, params):
+  a = params['prey_birthrate']
+  b = params['predator_eatrate']
+  dx_dt = a * x - (b * x * y)
+  return dx_dt
+
+
+def f_y(x, y, params):
+  c = params['predator_birthrate']
+  d = params['predator_deathrate']
+  dy_dt = c * x * y - (d * y)
+  return dy_dt
+
+
+def lotka_volterra(params):
+  T = []
+  X = []
+  Y = []
+  t = params['interval'][0]
+  t_f = params['interval'][1]
+  x = params['initial_prey']
+  y = params['initial_predator']
+  T.append(t)
+  X.append(x)
+  Y.append(y)
+  
+  h = params['step']
+  dx = RK_4(f_x, h).operation(x, y, params)
+  dy = RK_4(f_y, h).operation(x, y, params)
+  
+  while True:
+    t = t + h
+    x = x + dx
+    y = y + dy
+    
+    if t >= t_f:
+      break
+    elif x <= 0:
+      break
+    elif y <= 0:
+      break
+    
+    T.append(t)
+    X.append(x)
+    Y.append(y)
+    
+  print(f'at time {t}, the population of the prey is {x}, the population of the predator is {y}')
+  plt.plot(T, X, 'r')
+  plt.plot(T, Y, 'b')
+  plt.xlabel('Time')
+  plt.ylabel('Amount of Population')
+  plt.title('Predator Prey Model')
+  plt.show()
+  
+  
+params = {'prey_birthrate': 1,
+          'predator_eatrate': 0.01,
+          'predator_birthrate': 0.01,
+          'predator_deathrate': 0.5,
+          'initial_prey': 1000,
+          'initial_predator': 1,
+          'interval': [0, 200],
+          'step': 0.01}
+
+lotka_volterra(params)
+
+
+  
+  
