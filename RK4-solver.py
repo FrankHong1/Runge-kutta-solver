@@ -62,4 +62,3 @@ class RK_4:
 h = 0.001
 x_deriv = RK_4(f_x, h)
 x = x_deriv.operation(2, 3, params)
-print(x)
