@@ -59,19 +59,20 @@ def lotka_volterra(params):
   T = []
   X = []
   Y = []
+  
   t = params['interval'][0]
   t_f = params['interval'][1]
   x = params['initial_prey']
   y = params['initial_predator']
+  h = params['step']
   T.append(t)
   X.append(x)
   Y.append(y)
   
-  h = params['step']
-  dx = RK_4(f_x, h).operation(x, y, params)
-  dy = RK_4(f_y, h).operation(x, y, params)
-  
   while True:
+    dx = RK_4(f_x, h).operation(x, y, params)
+    dy = RK_4(f_y, h).operation(x, y, params)
+    
     t = t + h
     x = x + dx
     y = y + dy
@@ -96,14 +97,14 @@ def lotka_volterra(params):
   plt.show()
   
   
-params = {'prey_birthrate': 1,
-          'predator_eatrate': 0.01,
-          'predator_birthrate': 0.01,
-          'predator_deathrate': 0.5,
-          'initial_prey': 1000,
+params = {'prey_birthrate': 0.3,
+          'predator_eatrate': 0.1,
+          'predator_birthrate': 0.1,
+          'predator_deathrate': 0.3,
+          'initial_prey': 100,
           'initial_predator': 1,
-          'interval': [0, 200],
-          'step': 0.01}
+          'interval': [0, 1000],
+          'step': 0.001}
 
 lotka_volterra(params)
 
